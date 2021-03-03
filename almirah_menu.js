@@ -1,8 +1,9 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
+    try{
     const SELECTOR = "div.text-center"
-    const browser = await puppeteer.launch({headless: true})
+    const browser = await puppeteer.launch({headless: false})
     const page = await browser.newPage()    
     page.setDefaultNavigationTimeout(0)
     await page.goto("https://www.almirah.com.pk/")
@@ -53,6 +54,26 @@ const puppeteer = require('puppeteer');
         console.log(com)
     })
 
+    
+        for(let j = 0; j < combined.length; j++){
+        for(let i = 0; i < combined[j].children.length; i++){
+            console.log("blah blah blah",combined[j].children[i].a)
+            await page.goto(`${combined[j].children[i].a}`)
+            // await page.waitForNavigation()
+        }
+        // com.children.forEach(async child => {
+        //     console.log(child.a)
+        //     await page.goto(`${child.a}`).then
+        //     await page.waitForNavigation({ waitUntil: 'networkidle2' });
+        // })
+    }
+}
+catch (err) {
+    console.error(err.message);
+  } 
+  finally{
+
     await page.screenshot({ path: 'example.png' });
     await browser.close()
+  }
 })()
