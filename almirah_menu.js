@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
-
+const productsListGetter = require('./test')
+let prevLink =[];
 (async () => {
     try{
     const SELECTOR = "div.text-center"
@@ -54,26 +55,32 @@ const puppeteer = require('puppeteer');
         console.log(com)
     })
 
-    
+    await browser.close()
         for(let j = 0; j < combined.length; j++){
         for(let i = 0; i < combined[j].children.length; i++){
-            console.log("blah blah blah",combined[j].children[i].a)
-            await page.goto(`${combined[j].children[i].a}`)
-            // await page.waitForNavigation()
+            // console.log("blah blah blah",combined[j].children[i].a)
+            prevLink.push(`${combined[j].children[i].a}`)
+            await productsListGetter(combined[j].children[i].a)
+            // await page.goto(`${combined[j].children[i].a}`)
+
+            // await page.waitForNavigation()    this will not work it will break the page
+            
         }
-        // com.children.forEach(async child => {
-        //     console.log(child.a)
-        //     await page.goto(`${child.a}`).then
-        //     await page.waitForNavigation({ waitUntil: 'networkidle2' });
-        // })
+      
     }
+    await page.screenshot({ path: 'example.png' });
+    // await browser.close()
+    console.log({prevLink})
+
 }
 catch (err) {
     console.error(err.message);
   } 
-  finally{
+//   finally{
 
-    await page.screenshot({ path: 'example.png' });
-    await browser.close()
-  }
+//     await page.screenshot({ path: 'example.png' });
+//     await browser.close()
+//   }
 })()
+
+module.exports = prevLink
