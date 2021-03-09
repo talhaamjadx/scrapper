@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
-
+const productsDetail = require('./ali')
 var linkList = [];
 
 const productsListGetter = async (link) => {
@@ -42,10 +42,13 @@ const productsListGetter = async (link) => {
 
             for (var i = 0; i < productLinks.length; i++) {
                 linkList.push(`https://www.almirah.com.pk${productLinks[i].attribs.href}`)
+                // await productsDetail(`https://www.almirah.com.pk${productLinks[i].attribs.href}`)
             }
 
-        }
+            linkList = [...new Set(linkList)]
 
+        }
+       
 
         console.log(linkList)
         await browser.close()

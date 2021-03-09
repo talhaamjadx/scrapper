@@ -61,6 +61,7 @@ let prevLink =[];
             // console.log("blah blah blah",combined[j].children[i].a)
             prevLink.push(`${combined[j].children[i].a}`)
             await productsListGetter(combined[j].children[i].a)
+           
             // await page.goto(`${combined[j].children[i].a}`)
 
             // await page.waitForNavigation()    this will not work it will break the page

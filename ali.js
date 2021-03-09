@@ -4,9 +4,10 @@ const { contains } = require('cheerio');
 
 
 
-(async () => {
+const productsDetail = async (link) => {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
+    await page.goto(link);
     page.setDefaultNavigationTimeout(0)
     const productName_Selector = '.product-single__meta > h1'
     const productSku_Selector = '.product-single__sku'
@@ -16,7 +17,7 @@ const { contains } = require('cheerio');
     const productDetails_Selector = '.table-wrapper > table'
 
 
-    await page.goto('https://www.almirah.com.pk/collections/buraq-men/products/white-buraq-kameez-shalwar-albq-ks-001');
+
 
 
     await page.waitForSelector(productName_Selector)
@@ -97,7 +98,7 @@ const { contains } = require('cheerio');
         for (let i = 0; i < productImages.length; i++) {
             imageArr.push(productImages[0].attribs.srcset)
         }
-
+        console.log('location.href: ' + await page.evaluate(() => location.href));
          console.log(name)
         console.log(sku)
         console.log(price)
@@ -106,13 +107,8 @@ const { contains } = require('cheerio');
         // console.log(colorList)
            console.log(states)
         console.log({ imageArr })
-
+        await browser.close()
     })
-
-
-
-
-
-
-
-})()
+    // resolve('promise resolved')
+}
+module.exports = productsDetail
