@@ -6,8 +6,8 @@ const { contains } = require('cheerio');
 
 const productsDetail = async (link) => {
     const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(link);
+    const [page] = await browser.pages()
+    await page.goto(link  , {waitUntil : 'domcontentloaded'});
     page.setDefaultNavigationTimeout(0)
     const productName_Selector = '.product-single__meta > h1'
     const productSku_Selector = '.product-single__sku'
@@ -47,7 +47,7 @@ const productsDetail = async (link) => {
             states.color = $(`.table-wrapper > table > tbody > tr:nth-child(1) > td:nth-child(2)`).text().trim();
             states.pieces = $(`.table-wrapper > table > tbody > tr:nth-child(2) > td:nth-child(2)`).text().trim();
             states.fitType =$(`.table-wrapper > table > tbody > tr:nth-child(3) > td:nth-child(2)`).text().trim();
-            states.fabric = $(`.table-wrapper > table > tbody > tr:nth-child(4) > td:nth-child(2)`).text().trim();
+            states.fabric = $(`.table-wrapper > table > tbody > tr:nth-child(4) > td:nth-child(2)`).text().replace(/\s+/g, ' ').trim();
             states.collection = $(`.table-wrapper > table > tbody > tr:nth-child(5) > td:nth-child(2)`).text().trim();
             states.volume = $('.table-wrapper > table > tbody > tr:nth-child(6) > td:nth-child(2)').text().trim();
             states.disclaimer = $('.table-wrapper > table > tbody > tr:nth-child(7) > td:nth-child(2)').text().trim();
@@ -98,7 +98,7 @@ const productsDetail = async (link) => {
         for (let i = 0; i < productImages.length; i++) {
             imageArr.push(productImages[0].attribs.srcset)
         }
-        console.log('location.href: ' + await page.evaluate(() => location.href));
+        // console.log('location.href: ' + await page.evaluate(() => location.href));
          console.log(name)
         console.log(sku)
         console.log(price)

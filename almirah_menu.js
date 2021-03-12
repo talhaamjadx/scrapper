@@ -1,13 +1,26 @@
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 const productsListGetter = require('./test')
 let prevLink =[];
 (async () => {
     try{
     const SELECTOR = "div.text-center"
-    const browser = await puppeteer.launch({headless: false})
+    const browser = await puppeteer.launch({headless: true ,
+         userDataDir: './cache',
+         args: ['--no-sandbox',
+         '--disable-setuid-sandbox',
+         '--disable-dev-shm-usage',
+         '--disable-accelerated-2d-canvas',
+         '--no-first-run',
+         '--no-zygote',
+         '--disable-gpu'],
+         rate: parseInt(process.env.THROTTLE)
+        })
+
     const page = await browser.newPage()    
+   
     page.setDefaultNavigationTimeout(0)
-    await page.goto("https://www.almirah.com.pk/")
+    await page.goto("https://www.almirah.com.pk/" , {waitUntil : 'domcontentloaded'})
     await page.waitForSelector(SELECTOR);
     const content = await page.$$(`${SELECTOR} > ul > li`)
     let parentArray = []
@@ -55,14 +68,16 @@ let prevLink =[];
         console.log(com)
     })
 
-    await browser.close()
+    // await browser.close()
         for(let j = 0; j < combined.length; j++){
         for(let i = 0; i < combined[j].children.length; i++){
             // console.log("blah blah blah",combined[j].children[i].a)
             prevLink.push(`${combined[j].children[i].a}`)
-            await productsListGetter(combined[j].children[i].a)
+            prevLink = [...new Set(prevLink)]
+            // console.log({prevLink})
+            await productsListGetter(prevLink[prevLink.length-1])
            
-            // await page.goto(`${combined[j].children[i].a}`)
+            // await page.goto()
 
             // await page.waitForNavigation()    this will not work it will break the page
             
@@ -70,8 +85,8 @@ let prevLink =[];
       
     }
     await page.screenshot({ path: 'example.png' });
-    // await browser.close()
-    console.log({prevLink})
+    await browser.close()
+    // console.log( {prevLink})
 
 }
 catch (err) {
