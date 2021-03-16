@@ -110,9 +110,6 @@ if(childArray[i].childd != ''){
                         a: z.map(obj => obj.a),
                         names: z.map(obj => obj.names)
                     };
-
-
-
                     return results
 
 
@@ -125,6 +122,24 @@ if(childArray[i].childd != ''){
 
         combined.forEach(com => {
             console.log(com)
+
+            // here I,m removing the open quote from the names
+
+            var filtttt = [];
+            filtttt = com.children.names
+            var ss = [];
+            for(let l = 0; l < filtttt.length; l++){
+
+              
+                        
+                        ss =  filtttt[l].replace(/'/g,'')
+             
+              
+                        // console.log(ss)
+            }
+      
+
+
             
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -147,28 +162,49 @@ connection.connect(function (err) {
             connection.end();
           
             for (let k = 0; k < com.children.a.length; k++) {
+               
                 var connection = mysql.createConnection({
+                    connectionLimit : 100000,
                     host: 'localhost',
                     user: 'root',
                     password: '',
                     database: 'scrappe'
                 })
-                
+              
                 connection.connect(function (err) {
+                  
                     if (err) throw err;
+                    // console.log("ali", com.children.names)
                     console.log("Connected..")
                 })
-                var childss = "INSERT INTO sp_menu (sub_category , url , category) VALUES ('" + com.children.names + "' , '" + com.children.a + "', '" + com.name + "')";
+                
+                var childss = "INSERT INTO sp_menu (sub_category , url ) VALUES ('" + ss[k] + "' , '" + com.children.a[k] + "')";
+
+                
                 connection.query(childss, function (err, result) {
                     if (err) throw err;
                     console.log("Sp_Menu Recored Inserted!");
                 });
-                connection.end();
+                connection.release();
+                
             }
 
             console.log('chala geya sub!')
 
-        
+            // console.log(aaa);
+
+            //         var namesss = "INSERT INTO sp_menu (category) VALUES ('"+aaa+"')";
+            // connection.query(namesss, function (err, result) {
+            //     if (err) throw err;
+            //     console.log("Sub menu category Recored Inserted!");
+            //   });
+
+            //   var namesss = "INSERT INTO sp_menu (category) VALUES ('"+aaa+"')";
+            //   connection.query(namesss, function (err, result) {
+            //       if (err) throw err;
+            //       console.log("Sub menu category Recored Inserted!");
+            //     });
+
         })
 
         // await browser.close()
